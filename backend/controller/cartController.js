@@ -71,8 +71,8 @@ export const updateCartItem = async (req, res) => {
     const userId = req.user._id;
     const productId = req.params.productId;
 
-    if (!quantity || quantity < 1) {
-      return res.status(400).json({ success:false, message:"Quantity must be >= 1" });
+    if (quantity < 0) {
+      return res.status(400).json({ success:false, message:"Quantity cannot be negative" });
     }
 
     const cart = await Cart.findOne({ user: userId });
@@ -81,15 +81,21 @@ export const updateCartItem = async (req, res) => {
     const item = cart.items.find(i => i.product.toString() === productId);
     if (!item) return res.status(404).json({ success: false, message: "Product not in cart" });
 
-    item.quantity = quantity;
+    // If quantity = 0 → remove item
+    if (quantity === 0) {
+      cart.items = cart.items.filter(i => i.product.toString() !== productId);
+    } else {
+      item.quantity = quantity;
+    }
 
     await cart.save();
-    res.json({ success: true, message: "Update cart successfull", cart });
+    res.json({ success: true, message: "Cart updated", cart });
 
   } catch (error) {
     res.status(500).json({ success: false });
   }
 };
+
 
 
 export const removeCartItem = async (req, res) => {
