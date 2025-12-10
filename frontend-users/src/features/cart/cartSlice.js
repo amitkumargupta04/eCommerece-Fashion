@@ -1,11 +1,11 @@
 
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axiosInstance from "../../utils/axiosInstance";
+import {axiosInstance} from "../../utils/axiosInstance";
 
 // Get Cart
 export const getCart = createAsyncThunk("cart/getCart", async (_, { rejectWithValue }) => {
   try {
-    const res = await axiosInstance.get("/cart");
+    const res = await axiosInstance.get("/cart/all");
     return res.data.cart;
   } catch (err) {
     return rejectWithValue(err.response.data);

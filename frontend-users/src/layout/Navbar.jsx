@@ -1,189 +1,136 @@
-// components/Navbar.jsx
-import { useState } from "react";
-import {
-  Search,
-  User,
-  Heart,
-  ShoppingBag,
-  Menu,
-  X,
-  ChevronDown,
-} from "lucide-react";
-import React from "react";
-
-const categories = [
-  { name: "Men's Wear", link: "/category/mens" },
-  { name: "Women's Wear", link: "/category/womens" },
-  { name: "Kids Wear", link: "/category/kids" },
-];
+import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { Search, ShoppingCart, User } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export default function Navbar() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [categoryOpen, setCategoryOpen] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    fetch("http://localhost:5000/api/v1/category/all")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) {
+          setCategories(data.categories);
+        }
+      })
+      .catch((err) => console.log(err));
+  }, []);
 
   return (
-    <>
-      <nav className="sticky top-0 z-50 bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            {/* Left Side - Logo + Menu */}
-            <div className="flex items-center">
-              {/* Mobile Menu Button */}
-              <button
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="lg:hidden p-2 rounded-md text-gray-600 hover:bg-gray-100"
-              >
-                {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-              </button>
+    <header className="w-full bg-black text-white py-4 fixed top-0 left-0 shadow-xl z-50">
+      <div className="max-w-7xl mx-auto px-4 flex items-center justify-between gap-4">
 
-              {/* Logo */}
-              <a href="/" className="flex items-center ml-3 lg:ml-0">
-                <img src="https://marketplace.canva.com/EAGVEEMC0FA/1/0/800w/canva-navy-and-pink-modern-online-store-logo-dm-X_1CXJto.jpg"
-                 className="h-15 w-15" 
-                />
-              </a>
+        {/* Logo */}
+        <motion.h1
+          whileHover={{ scale: 1.1 }}
+          className="text-2xl font-bold tracking-wide cursor-pointer"
+        >
+          FashionX
+        </motion.h1>
 
-              {/* Desktop Menu */}
-              <div className="hidden lg:flex lg:ml-10 lg:space-x-8">
-                <a
-                  href="/"
-                  className="text-gray-900 hover:text-purple-600 font-medium transition"
+        {/* Desktop Navigation */}
+        <motion.nav
+          className="hidden md:flex gap-4 text-sm font-medium opacity-90 relative"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3 }}
+        >
+          {/* Dropdown */}
+          <div className="group relative cursor-pointer">
+            <span className="hover:text-gray-300 transition inline-block">
+              Categories ▾
+            </span>
+
+            <div className="absolute left-0 mt-2 w-40 bg-black border border-white/10 rounded-lg shadow-lg 
+              opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200">
+
+              {categories.map((cat) => (
+                <Link
+                  key={cat._id}
+                  to={`/category/${cat.name.toLowerCase()}`}
+                  className="block px-4 py-2 hover:bg-white/10"
                 >
-                  Home
-                </a>
-
-                <div
-                  className="relative"
-                  onMouseLeave={() => setCategoryOpen(false)}
-                >
-                  <button
-                    onMouseEnter={() => setCategoryOpen(true)}
-                    className="flex items-center text-gray-900 hover:text-purple-600 font-medium transition"
-                  >
-                    Categories
-                    <ChevronDown className="ml-1 h-4 w-4" />
-                  </button>
-
-                  {/* Dropdown */}
-                  {categoryOpen && (
-                    <div className="absolute top-full left-0 mt-3 w-56 bg-white rounded-xl shadow-2xl border border-gray-100 py-3 overflow-hidden">
-                      {categories.map((cat, index) => (
-                        <a
-                          key={index}
-                          href={cat.link}
-                          className="block px-6 py-3 text-gray-700 font-medium transition-all duration-200 
-          hover:bg-purple-600 hover:text-white hover:px-8 hover:tracking-wide"
-                        >
-                          {cat.name}
-                        </a>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {/* Right Side - Search + Icons */}
-            <div className="flex items-center space-x-4">
-              {/* Search Bar - Hidden on mobile */}
-              <div className="flex relative">
-                <input
-                  type="text"
-                  placeholder="Search products, brands..."
-                  className="w-80 pl-12 pr-6 py-3 border border-gray-300 rounded-full focus:outline-none focus:border-purple-500 transition text-sm"
-                />
-                <Search
-                  className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
-                  size={20}
-                />
-              </div>
-
-              {/* Icons */}
-              <div className="flex items-center space-x-5 text-gray-700">
-                {/* Mobile Search Icon */}
-                <button className="md:hidden">
-                  <Search size={22} />
-                </button>
-
-                <a href="/profile" className="hover:text-purple-600 transition">
-                  <User size={22} />
-                </a>
-
-                <a
-                  href="/wishlist"
-                  className="relative hover:text-purple-600 transition"
-                >
-                  <Heart size={22} />
-                  <span className="absolute -top-2 -right-2 bg-purple-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-medium">
-                    3
-                  </span>
-                </a>
-
-                <a
-                  href="/cart"
-                  className="relative hover:text-purple-600 transition"
-                >
-                  <ShoppingBag size={22} />
-                  <span className="absolute -top-2 -right-2 bg-purple-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-medium">
-                    5
-                  </span>
-                </a>
-              </div>
+                  {cat.name}
+                </Link>
+              ))}
             </div>
           </div>
+        </motion.nav>
+
+        {/* Desktop Search Bar */}
+        <motion.div
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ delay: 0.2 }}
+          className="flex-1 hidden sm:flex justify-center"
+        >
+          <div className="relative w-full max-w-md">
+            <input
+              type="text"
+              placeholder="Search products..."
+              className="w-full px-4 py-2 bg-black border border-white/20 rounded-full 
+              text-white placeholder-gray-400 focus:outline-none focus:border-white/50 transition"
+            />
+            <Search className="absolute right-3 top-2.5 w-5 h-5 text-gray-300" />
+          </div>
+        </motion.div>
+
+        {/* Right Icons */}
+        <div className="flex items-center gap-5">
+          <motion.div whileHover={{ scale: 1.2 }} className="cursor-pointer">
+            <User className="w-6 h-6" />
+          </motion.div>
+
+          <motion.div whileHover={{ scale: 1.2 }} className="cursor-pointer relative">
+            <ShoppingCart className="w-6 h-6" />
+            <span className="absolute -top-2 -right-2 bg-white text-black text-xs font-bold 
+              w-5 h-5 flex items-center justify-center rounded-full">3</span>
+          </motion.div>
+
+          {/* Hamburger */}
+          <button
+            className="md:hidden text-3xl"
+            onClick={() => setOpen(!open)}
+          >
+            ☰
+          </button>
         </div>
+      </div>
 
-        {/* Mobile Menu */}
-        {mobileMenuOpen && (
-          <div className="lg:hidden bg-white border-t border-gray-200">
-            <div className="px-4 pt-4 pb-6 space-y-4">
-              <a
-                href="/"
-                className="block text-lg font-medium text-gray-900 py-2"
-              >
-                Home
-              </a>
-
-              <div>
-                <button
-                  onClick={() => setCategoryOpen(!categoryOpen)}
-                  className="w-full flex justify-between items-center text-lg font-medium text-gray-900 py-2"
-                >
-                  Categories
-                  <ChevronDown
-                    className={`h-5 w-5 transition-transform ${
-                      categoryOpen ? "rotate-180" : ""
-                    }`}
-                  />
-                </button>
-
-                {categoryOpen && (
-                  <div className="pl-6 space-y-3 mt-3">
-                    <a
-                      href="/category/mens"
-                      className="block text-gray-600 hover:text-purple-600 py-2"
-                    >
-                      Men's
-                    </a>
-                    <a
-                      href="/category/womens"
-                      className="block text-gray-600 hover:text-purple-600 py-2"
-                    >
-                      Women's
-                    </a>
-                    <a
-                      href="/category/kids"
-                      className="block text-gray-600 hover:text-purple-600 py-2"
-                    >
-                      Kids
-                    </a>
-                  </div>
-                )}
-              </div>
-            </div>
+      {/* Mobile Menu */}
+      {open && (
+        <motion.div
+          initial={{ height: 0, opacity: 0 }}
+          animate={{ height: "auto", opacity: 1 }}
+          className="md:hidden bg-black px-6 pb-4 mt-3 border-t border-white/10"
+        >
+          {/* Search */}
+          <div className="relative w-full my-3">
+            <input
+              type="text"
+              placeholder="Search products..."
+              className="w-full px-4 py-2 bg-black border border-white/20 rounded-full 
+              text-white placeholder-gray-400 focus:outline-none"
+            />
+            <Search className="absolute right-3 top-2.5 w-5 h-5 text-gray-300" />
           </div>
-        )}
-      </nav>
-    </>
+
+          {/* Mobile Categories */}
+          <div className="flex flex-col gap-2 text-lg mt-4">
+            {categories.map((cat) => (
+              <Link
+                key={cat._id}
+                to={`/category/${cat.name.toLowerCase()}`}
+                className="py-2 border-b border-white/10"
+              >
+                {cat.name}
+              </Link>
+            ))}
+          </div>
+        </motion.div>
+      )}
+    </header>
   );
 }

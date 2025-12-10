@@ -1,70 +1,106 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import axios from "axios";
+import React from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Carousel() {
-  const images = [
-    "https://images.unsplash.com/flagged/photo-1570733117311-d990c3816c47?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    "https://plus.unsplash.com/premium_photo-1683121266311-04c92a01f5e6?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    "https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    "https://plus.unsplash.com/premium_photo-1664202526559-e21e9c0fb46a?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8ZmFzaGlvbnxlbnwwfHwwfHx8MA%3D%3D",
-    "https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-  ];
-
+  const [banner, setBanners] = useState([]);
   const [current, setCurrent] = useState(0);
+  const navigate = useNavigate();
+
+  // Fetch banners
+  const getBanner = async () => {
+    try {
+      const res = await axios.get("http://localhost:5000/api/v1/banner/get");
+      if (res.data.success) {
+        setBanners(res.data.banners);
+      }
+    } catch (error) {
+      console.log("Error fetching banners:", error);
+    }
+  };
+
+  useEffect(() => {
+    getBanner();
+  }, []);
 
   const nextSlide = () => {
-    setCurrent((prev) => (prev + 1) % images.length);
+    if (banner.length === 0) return;
+    setCurrent((prev) => (prev + 1) % banner.length);
   };
 
   const prevSlide = () => {
-    setCurrent((prev) => (prev - 1 + images.length) % images.length);
+    if (banner.length === 0) return;
+    setCurrent((prev) => (prev - 1 + banner.length) % banner.length);
   };
 
   useEffect(() => {
     const timer = setInterval(() => {
       nextSlide();
-    }, 3000); // auto slide every 3 sec
-
+    }, 4000); // auto-slide every 4s
     return () => clearInterval(timer);
-  }, []);
+  }, [banner]);
+
+  if (banner.length === 0) return null;
 
   return (
-    <div className="relative w-full h-64 sm:h-80 lg:h-[500px] overflow-hidden">
-      {/* Images */}
-      {images.map((img, index) => (
-        <img
-          key={index}
-          src={img}
-          className={`absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-700  ${
-            index === current ? "opacity-100" : "opacity-0"
+    <div className="relative w-full h-[500px] sm:h-[500px] lg:h-[500px] overflow-hidden">
+      {/* Slides */}
+      {banner.map((item, index) => (
+        <div
+          key={item._id}
+          className={`absolute top-0 left-0 w-full h-full transition-opacity duration-700 ${
+            index === current ? "opacity-100 z-10" : "opacity-0 z-0"
           }`}
-        />
+        >
+          {/* Image */}
+          <img
+            src={item.image}
+            alt={item.title}
+            className="w-full h-full object-cover"
+          />
+
+          {/* Overlay Text */}
+          <div className="absolute inset-0 bg-black/30 flex flex-col justify-center items-start px-6 sm:px-12 lg:px-24 text-white">
+            <h2 className="text-xl sm:text-3xl lg:text-5xl font-bold mb-2">{item.title}</h2>
+            <p className="text-sm sm:text-lg lg:text-xl mb-4">{item.subtitle}</p>
+            {item.link && (
+              <button
+                onClick={() => navigate(item.link)}
+                className="bg-white/70 text-black px-4 py-2 sm:px-6 sm:py-3 rounded hover:bg-black hover:text-white transition"
+              >
+                Shop Now
+              </button>
+            )}
+          </div>
+        </div>
       ))}
 
-      {/* Left Arrow */}
+      {/* Arrows */}
       <button
         onClick={prevSlide}
-        className="absolute top-1/2 left-4 -translate-y-1/2 bg-white/70 p-3 rounded-full shadow hover:bg-black hover:text-white transition cursor-pointer"
+        className="absolute top-1/2 left-4 -translate-y-1/2 bg-white/70 p-3 rounded-full shadow hover:bg-black hover:text-white transition cursor-pointer z-20"
       >
-        <ChevronLeft size={15} />
+        <ChevronLeft size={24} />
       </button>
 
-      {/* Right Arrow */}
       <button
         onClick={nextSlide}
-        className="absolute top-1/2 right-4 -translate-y-1/2 bg-white/70 p-3 rounded-full shadow hover:bg-black cursor-pointer hover:text-white transition"
+        className="absolute top-1/2 right-4 -translate-y-1/2 bg-white/70 p-3 rounded-full shadow hover:bg-black hover:text-white transition cursor-pointer z-20"
       >
-        <ChevronRight size={15} />
+        <ChevronRight size={24} />
       </button>
 
       {/* Dots */}
-      <div className="absolute bottom-4 w-full flex justify-center gap-2">
-        {images.map((_, index) => (
+      <div className="absolute bottom-4 w-full flex justify-center gap-2 z-20">
+        {banner.map((_, index) => (
           <div
             key={index}
-            className={`h-2 w-2 rounded-full ${
+            className={`h-2 w-2 rounded-full cursor-pointer ${
               index === current ? "bg-black h-3 w-3" : "bg-gray-300"
             }`}
+            onClick={() => setCurrent(index)}
           ></div>
         ))}
       </div>

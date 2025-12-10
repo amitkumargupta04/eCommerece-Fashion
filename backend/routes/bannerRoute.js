@@ -4,8 +4,8 @@ import { isAdmin, isAuthenticated } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-router.post("/create", createBanner);
-router.get("/get", isAuthenticated, isAdmin, getBanners);
+router.post("/create", isAuthenticated, isAdmin, createBanner);
+router.get("/get", getBanners);
 router.put("/update/:id", isAuthenticated, isAdmin, updateBanner);
 router.delete("/delete/:id", isAuthenticated, isAdmin, deleteBanner);
 
