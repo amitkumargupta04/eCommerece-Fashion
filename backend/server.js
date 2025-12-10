@@ -11,6 +11,7 @@ import categoryRoutes from "./routes/categoryRoute.js"
 import productRoutes from "./routes/productRoute.js"
 import cartRoute from "./routes/cartRoute.js"
 import orderRoute from "./routes/orderRoute.js"
+import bannerRoute from "./routes/bannerRoute.js"
 
 connectDB();
 const app = express();
@@ -26,6 +27,7 @@ app.use("/api/v1/category", categoryRoutes);
 app.use("/api/v1/product", productRoutes)
 app.use("/api/v1/cart", cartRoute);
 app.use("/api/v1/order", orderRoute);
+app.use("/api/v1/banner", bannerRoute);
 
 
 app.get('/', (req, res) => {

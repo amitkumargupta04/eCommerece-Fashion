@@ -1,11 +1,11 @@
 import React from 'react'
+import HomePage from './pages/HomePage';
 
-import Footer from './layout/Footer';
 
 function App() {
   return (
-    <> 
-      <Footer />
+    <>
+      <HomePage/>
     </>
   )
 }

@@ -1,6 +1,17 @@
 import { Category } from "../models/categoryModel.js";
 import { Product } from "../models/productModel.js";
 
+// helper to convert "true"/"false" (strings) to boolean
+const parseBool = (val) => {
+  if (typeof val === "boolean") return val;
+  if (typeof val === "string") {
+    const v = val.toLowerCase().trim();
+    if (v === "true") return true;
+    if (v === "false") return false;
+  }
+  return undefined;
+};
+
 export const createProduct = async (req, res) => {
   try {
     const {
@@ -15,6 +26,9 @@ export const createProduct = async (req, res) => {
       images,
       colors,
       sizes,
+      isBestSeller,
+      isNewArrival,
+      isTrending,
     } = req.body;
 
     // category validations
@@ -25,12 +39,12 @@ export const createProduct = async (req, res) => {
         message: "Invalid Category",
       });
     }
-    // // Subcategory validation
-    // if (subcategory && !categoryDoc.subcategories.includes(subcategory)) {
-    //   return res
-    //     .status(400)
-    //     .json({ success: false, message: "Invalid subcategory" });
-    // }
+
+    // convert possible string booleans to real booleans
+    const parsedIsBestSeller = parseBool(isBestSeller);
+    const parsedIsNewArrival = parseBool(isNewArrival);
+    const parsedIsTrending = parseBool(isTrending);
+
     const product = await Product.create({
       name,
       brand,
@@ -43,7 +57,16 @@ export const createProduct = async (req, res) => {
       images,
       colors,
       sizes,
+      // use parsed booleans if provided, otherwise let model default apply
+      ...(parsedIsBestSeller !== undefined && {
+        isBestSeller: parsedIsBestSeller,
+      }),
+      ...(parsedIsNewArrival !== undefined && {
+        isNewArrival: parsedIsNewArrival,
+      }),
+      ...(parsedIsTrending !== undefined && { isTrending: parsedIsTrending }),
     });
+
     res.status(201).json({
       success: true,
       message: "Product created successfull",
@@ -411,6 +434,57 @@ export const filterProduct = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Error in filter products",
+    });
+  }
+};
+
+export const getTrendingProducts = async (req, res) => {
+  try {
+    const products = await Product.find({ isTrending: true }).limit(10).sort({ createdAt: -1 });
+    return res.status(200).json({
+      success: true,
+      total: products.length,
+      products,
+    });
+  } catch (error) {
+    console.log("Error in getTrendingProducts", error);
+    res.status(500).json({
+      success: false,
+      message: "Error in getting trending products",
+    });
+  }
+};
+
+export const getNewArrivals = async (req, res) => {
+  try {
+    const products = await Product.find({ isNewArrival: true }).limit(10).sort({ createdAt: -1 });
+    return res.status(200).json({
+      success: true,
+      total: products.length,
+      products,
+    });
+  } catch (error) {
+    console.log("Error in getNewArrivals", error);
+    res.status(500).json({
+      success: false,
+      message: "Error in getting new arrivals",
+    });
+  }
+};
+
+export const getBestSellers = async (req, res) => {
+  try {
+    const products = await Product.find({ isBestSeller: true }).limit(10).sort({ createdAt: -1 });
+    return res.status(200).json({
+      success: true,
+      total: products.length,
+      products,
+    });
+  } catch (error) {
+    console.log("Error in getBestSellers", error);
+    res.status(500).json({
+      success: false,
+      message: "Error in getting best sellers",
     });
   }
 };

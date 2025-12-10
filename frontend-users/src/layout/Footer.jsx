@@ -65,7 +65,7 @@ function Footer() {
       </div>
       {/* Part 2  */}
       <div className="bg-black py-10 px-8 sm:px-16 md:px-28 lg:px-35 ">
-        <div className="text-white grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-15 ">
+        <div className="text-white grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-15 ">
           <div className="space-y-4 cursor-pointer ">
             <p className="text-xl font-medium">Store Information</p>
             <div className="space-y-5" >
@@ -91,7 +91,7 @@ function Footer() {
             <p className="text-gray-400">New blog</p>
             <p className="text-gray-400">Contact us</p>
           </div>
-          <div className="space-y-2 cursor-pointer">
+          <div className="space-y-2 cursor-pointer flex flex-col">
             <p className="text-xl font-medium mb-4" >Information</p>
             <p className="text-gray-400">Help Center</p>
             <p className="text-gray-400">Press</p>
@@ -109,20 +109,20 @@ function Footer() {
           </div>
         </div>
         <div className="bg-gray-600 w-full h-px mt-12"></div>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 text-white mt-12 gap-2">
-            <p className="flex items-center text-sm md:text-xl lg:text-2xl gap-2">
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 text-white mt-12 gap-6">
+            <p className="flex items-center justify-center text-sm md:text-xl lg:text-2xl gap-2">
                 <IoShirtOutline  size={25}/>
                 GuptaG
             </p>
-            <p className="flex items-center text-sm md:text-xl lg:text-2xl gap-2">
+            <p className="flex items-center justify-center text-sm md:text-xl lg:text-2xl gap-2">
                 <BsFillTelephoneForwardFill size={25}/>
                 +91 6392861704
             </p>
-            <p className="flex items-center text-sm md:text-xl lg:text-2xl gap-2">
+            <p className="flex items-center justify-center text-sm md:text-xl lg:text-2xl gap-2">
                 <FaCarSide size={25}/>
                 Amount over $ 100
             </p>
-            <p className="flex items-center text-sm md:text-xl lg:text-2xl gap-2">
+            <p className="flex items-center justify-center text-sm md:text-xl lg:text-2xl gap-2">
                 <CiDiscount1 size={25}/>
                 Discount up to 10% 
             </p>

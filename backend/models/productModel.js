@@ -37,6 +37,9 @@ const productSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    isBestSeller: { type: Boolean, default: false },
+    isNewArrival: { type: Boolean, default: false },
+    isTrending: { type: Boolean, default: false },
 
     // 🔹 For future (optional)
     //   rating: { type: Number, default: 0 },
