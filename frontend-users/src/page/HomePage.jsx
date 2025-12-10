@@ -10,14 +10,12 @@ import Navbar from '../layout/Navbar'
 function HomePage() {
   return (
     <>
-     <Navbar/>
      <Crousel/>
      <ShopByCategory/>
      <NewArrivals/>
      <BestSellers/>
      <TrendingProducts/>
      <OurProcess/>
-     <Footer/>
     </>
   )
 }

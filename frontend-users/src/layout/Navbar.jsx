@@ -1,11 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
 import { Search, ShoppingCart, User } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { logoutUser } from "../features/auth/authSlice";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [categories, setCategories] = useState([]);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const { user } = useSelector((state) => state.auth);
 
   useEffect(() => {
     fetch("http://localhost:5000/api/v1/category/all")
@@ -18,34 +23,50 @@ export default function Navbar() {
       .catch((err) => console.log(err));
   }, []);
 
-  return (
-    <header className="w-full bg-black text-white py-4 fixed top-0 left-0 shadow-xl z-50">
-      <div className="max-w-7xl mx-auto px-4 flex items-center justify-between gap-4">
+  const handleLogout = () => {
+    dispatch(logoutUser());
+    navigate("/login");
+  };
 
+  const handleCartClick = () => {
+    if (!user) {
+      navigate("/register");
+    } else {
+      navigate("/cart"); // agar cart page hai
+    }
+  };
+
+  const handleProfileClick = () => {
+    if (!user) {
+      navigate("/register");
+    } else {
+      navigate("/user-profile"); // agar profile page hai
+    }
+  };
+
+  return (
+    <header className="w-full bg-black text-white py-6 fixed top-0 left-0 shadow-xl z-50">
+      <div className="max-w-7xl mx-auto px-4 flex items-center justify-between gap-4">
         {/* Logo */}
-        <motion.h1
-          whileHover={{ scale: 1.1 }}
+        <h1
           className="text-2xl font-bold tracking-wide cursor-pointer"
+          onClick={() => navigate("/")}
         >
           FashionX
-        </motion.h1>
+        </h1>
 
         {/* Desktop Navigation */}
-        <motion.nav
-          className="hidden md:flex gap-4 text-sm font-medium opacity-90 relative"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.3 }}
-        >
+        <nav className="hidden md:flex gap-4 text-sm font-medium opacity-90 relative">
           {/* Dropdown */}
           <div className="group relative cursor-pointer">
             <span className="hover:text-gray-300 transition inline-block">
               Categories ▾
             </span>
 
-            <div className="absolute left-0 mt-2 w-40 bg-black border border-white/10 rounded-lg shadow-lg 
-              opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200">
-
+            <div
+              className="absolute left-0 mt-2 w-40 bg-black border border-white/10 rounded-lg shadow-lg 
+              opacity-0 group-hover:opacity-100 invisible group-hover:visible transition-all duration-200"
+            >
               {categories.map((cat) => (
                 <Link
                   key={cat._id}
@@ -57,15 +78,10 @@ export default function Navbar() {
               ))}
             </div>
           </div>
-        </motion.nav>
+        </nav>
 
         {/* Desktop Search Bar */}
-        <motion.div
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ delay: 0.2 }}
-          className="flex-1 hidden sm:flex justify-center"
-        >
+        <div className="flex-1 hidden sm:flex justify-center">
           <div className="relative w-full max-w-md">
             <input
               type="text"
@@ -75,25 +91,55 @@ export default function Navbar() {
             />
             <Search className="absolute right-3 top-2.5 w-5 h-5 text-gray-300" />
           </div>
-        </motion.div>
+        </div>
 
-        {/* Right Icons */}
-        <div className="flex items-center gap-5">
-          <motion.div whileHover={{ scale: 1.2 }} className="cursor-pointer">
-            <User className="w-6 h-6" />
-          </motion.div>
+        {/* Right Buttons & Icons */}
+        <div className="flex items-center gap-3 md:gap-5">
+          {user ? (
+            <>
+              <button
+                className="flex items-center justify-center w-10 h-10 text-white cursor-pointer"
+                onClick={handleProfileClick}
+              >
+                <User className="w-7 h-7" />
+              </button>
+              <button
+                className="px-4 py-1.5 bg-red-500 rounded text-white text-sm md:text-base cursor-pointer hover:bg-red-600 "
+                onClick={handleLogout}
+              >
+                Logout
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                className="px-4 py-1.5 bg-white/90 text-black rounded text-sm md:text-base cursor-pointer hover:bg-white"
+                onClick={() => navigate("/register")}
+              >
+                Signup
+              </button>
+              <button
+                className="px-4 py-1.5 bg-white/90 text-black rounded text-sm md:text-base cursor-pointer hover:bg-white"
+                onClick={() => navigate("/login")}
+              >
+                Login
+              </button>
+            </>
+          )}
 
-          <motion.div whileHover={{ scale: 1.2 }} className="cursor-pointer relative">
+          {/* Cart */}
+          <div className="cursor-pointer relative" onClick={handleCartClick}>
             <ShoppingCart className="w-6 h-6" />
-            <span className="absolute -top-2 -right-2 bg-white text-black text-xs font-bold 
-              w-5 h-5 flex items-center justify-center rounded-full">3</span>
-          </motion.div>
+            <span
+              className="absolute -top-2 -right-2 bg-white text-black text-xs font-bold 
+              w-5 h-5 flex items-center justify-center rounded-full"
+            >
+              3
+            </span>
+          </div>
 
           {/* Hamburger */}
-          <button
-            className="md:hidden text-3xl"
-            onClick={() => setOpen(!open)}
-          >
+          <button className="md:hidden text-3xl" onClick={() => setOpen(!open)}>
             ☰
           </button>
         </div>
@@ -101,11 +147,7 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       {open && (
-        <motion.div
-          initial={{ height: 0, opacity: 0 }}
-          animate={{ height: "auto", opacity: 1 }}
-          className="md:hidden bg-black px-6 pb-4 mt-3 border-t border-white/10"
-        >
+        <div className="md:hidden bg-black px-6 pb-4 mt-3 border-t border-white/10">
           {/* Search */}
           <div className="relative w-full my-3">
             <input
@@ -129,7 +171,7 @@ export default function Navbar() {
               </Link>
             ))}
           </div>
-        </motion.div>
+        </div>
       )}
     </header>
   );

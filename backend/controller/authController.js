@@ -109,4 +109,38 @@ export const logoutUser = async (req, res) => {
   }
 };
 
+export const getUserProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select("-password");
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+    return res.status(200).json({ success: true, user });
+  } catch (error) {
+    console.log("Error in getUserProfile", error);
+    return res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
 
+export const updateUserProfile = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    const { fullname, phone, profilePicture, addresses } = req.body;
+
+    user.fullname = fullname || user.fullname;
+    user.phone = phone || user.phone;
+    user.profilePicture = profilePicture || user.profilePicture;
+    if (addresses) user.addresses = addresses;
+
+    await user.save();
+
+    return res.status(200).json({ success: true, user, message: "User profile updated" });
+  } catch (error) {
+    console.log("Error in updateUserProfile", error);
+    return res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
