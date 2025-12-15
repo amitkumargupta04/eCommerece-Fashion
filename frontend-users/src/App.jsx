@@ -7,7 +7,7 @@ import HomePage from "./page/HomePage";
 import LoginPage from "./page/LoginPage";
 import SignupPage from "./page/SignupPage";
 import Layout from "./layout/Layout";
-import UserProfile from "./page/UserProfile";
+import UserProfile from "./page/UserProfile"; 
 
 function App() {
   return (

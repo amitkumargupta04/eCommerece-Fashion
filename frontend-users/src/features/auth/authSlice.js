@@ -15,18 +15,32 @@ export const registerUser = createAsyncThunk(
   }
 );
 
-// Login User
+// // Login User
+// export const loginUser = createAsyncThunk(
+//   "auth/loginUser",
+//   async (userData, { rejectWithValue }) => {
+//     try {
+//       const res = await axiosInstance.post("/user/login", userData);
+//       return res.data.user;
+//     } catch (err) {
+//       return rejectWithValue(err.response?.data);
+//     }
+//   }
+// );
 export const loginUser = createAsyncThunk(
   "auth/loginUser",
   async (userData, { rejectWithValue }) => {
     try {
       const res = await axiosInstance.post("/user/login", userData);
+      localStorage.setItem("token", res.data.token);
+
       return res.data.user;
     } catch (err) {
-      return rejectWithValue(err.response?.data);
+      return rejectWithValue(err.response?.data?.message);
     }
   }
 );
+
 
 // Load Logged-in User
 export const loadUser = createAsyncThunk(
@@ -166,7 +180,7 @@ const authSlice = createSlice({
       .addCase(updateUserProfile.fulfilled, (state, action) => {
         state.loading = false;
         state.user = action.payload;
-        toast.success("Profile updated successfully!");
+        //toast.success("Profile updated successfully!");
       })
       .addCase(updateUserProfile.rejected, (state, action) => {
         state.loading = false;
