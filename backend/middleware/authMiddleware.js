@@ -19,7 +19,7 @@ export const isAuthenticated = async (req, res, next) => {
         .json({ success: false, message: "User not found" });
     }
 
-    req.user = user; // attach user to request
+    req.user = user;
     next();
   } catch (error) {
     console.log("Auth middleware error:", error);

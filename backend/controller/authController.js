@@ -27,7 +27,7 @@ export const signupUser = async (req, res) => {
       fullname,
       email,
       password: hashPassword,
-      role: role || "user"
+      role: role || "user",
     });
 
     return res.status(201).json({
@@ -98,13 +98,13 @@ export const logoutUser = async (req, res) => {
     // Backend me kuch store nahi hai, bas success message
     return res.status(200).json({
       success: true,
-      message: "Logged out successfully"
+      message: "Logged out successfully",
     });
   } catch (error) {
     console.log("Error in logout", error);
     return res.status(500).json({
       success: false,
-      message: "Internal server error"
+      message: "Internal server error",
     });
   }
 };
@@ -113,12 +113,16 @@ export const getUserProfile = async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select("-password");
     if (!user) {
-      return res.status(404).json({ success: false, message: "User not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
     }
     return res.status(200).json({ success: true, user });
   } catch (error) {
     console.log("Error in getUserProfile", error);
-    return res.status(500).json({ success: false, message: "Internal server error" });
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal server error" });
   }
 };
 
@@ -126,7 +130,9 @@ export const updateUserProfile = async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
     if (!user) {
-      return res.status(404).json({ success: false, message: "User not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
     }
 
     const { fullname, phone, profilePicture, addresses } = req.body;
@@ -134,13 +140,23 @@ export const updateUserProfile = async (req, res) => {
     user.fullname = fullname || user.fullname;
     user.phone = phone || user.phone;
     user.profilePicture = profilePicture || user.profilePicture;
-    if (addresses) user.addresses = addresses;
+
+    // if (addresses) user.addresses = addresses;
+    // await user.save();
+    if (addresses) {
+      user.addresses = addresses;
+      user.markModified("addresses");
+    }
 
     await user.save();
 
-    return res.status(200).json({ success: true, user, message: "User profile updated" });
+    return res
+      .status(200)
+      .json({ success: true, user, message: "User profile updated" });
   } catch (error) {
     console.log("Error in updateUserProfile", error);
-    return res.status(500).json({ success: false, message: "Internal server error" });
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal server error" });
   }
 };

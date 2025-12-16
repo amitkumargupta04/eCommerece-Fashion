@@ -16,17 +16,6 @@ export const registerUser = createAsyncThunk(
 );
 
 // // Login User
-// export const loginUser = createAsyncThunk(
-//   "auth/loginUser",
-//   async (userData, { rejectWithValue }) => {
-//     try {
-//       const res = await axiosInstance.post("/user/login", userData);
-//       return res.data.user;
-//     } catch (err) {
-//       return rejectWithValue(err.response?.data);
-//     }
-//   }
-// );
 export const loginUser = createAsyncThunk(
   "auth/loginUser",
   async (userData, { rejectWithValue }) => {
@@ -72,7 +61,7 @@ export const getUserProfile = createAsyncThunk(
   "auth/getUserProfile",
   async (_, { rejectWithValue }) => {
     try {
-      const res = await axiosInstance.get("/user/profile"); // api route
+      const res = await axiosInstance.get("/user/profile");
       return res.data.user;
     } catch (err) {
       return rejectWithValue(err.response?.data);
@@ -84,7 +73,7 @@ export const updateUserProfile = createAsyncThunk(
   "auth/updateUserProfile",
   async (userData, { rejectWithValue }) => {
     try {
-      const res = await axiosInstance.put("/user/update-profile", userData); // api route
+      const res = await axiosInstance.put("/user/update-profile", userData); 
       return res.data.user;
     } catch (err) {
       return rejectWithValue(err.response?.data);
