@@ -8,7 +8,7 @@ export const axiosInstance = axios.create({
 
 // Request interceptor to add token automatically
 axiosInstance.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token"); // ya redux state se bhi le sakte ho
+  const token = localStorage.getItem("token"); 
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }

@@ -29,8 +29,6 @@ export const loginUser = createAsyncThunk(
     }
   }
 );
-
-
 // Load Logged-in User
 export const loadUser = createAsyncThunk(
   "auth/loadUser",
