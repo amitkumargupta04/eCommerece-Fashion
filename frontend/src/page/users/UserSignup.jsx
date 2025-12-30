@@ -13,7 +13,8 @@ function UserSignup() {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { loading, error, user } = useSelector((state) => state.auth);
+  const { loading, error, user, signupSuccess } = useSelector((state) => state.auth);
+  const { isAuthenticated } = useSelector((state) => state.auth);
 
   // Generic input handler
   const handleChange = (e) => {
@@ -32,11 +33,12 @@ function UserSignup() {
     );
   };
 
-  // Redirect after successful registration
   useEffect(() => {
-    if (user) navigate("/login");
-  }, [user, navigate]);
-
+    if (signupSuccess) {
+      navigate("/login");
+    }
+  }, [signupSuccess, navigate]);
+  
   return (
     <div className="relative min-h-screen flex items-center justify-center px-4">
       {/* Fullscreen background image */}
@@ -110,7 +112,11 @@ function UserSignup() {
             disabled={loading}
             className="w-full bg-black text-white py-2 rounded hover:bg-gray-800 transition flex items-center justify-center"
           >
-            {loading ? <span className="animate-pulse">Registering...</span> : "Sign Up"}
+            {loading ? (
+              <span className="animate-pulse">Registering...</span>
+            ) : (
+              "Sign Up"
+            )}
           </button>
         </form>
 

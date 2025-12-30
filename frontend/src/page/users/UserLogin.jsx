@@ -12,7 +12,7 @@ function UserLogin() {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { loading, error, user } = useSelector((state) => state.auth);
+  const { loading, error, user, isAuthenticated } = useSelector((state) => state.auth);
 
   // Generic input change handler
   const handleChange = (e) => {
@@ -27,8 +27,8 @@ function UserLogin() {
 
   // Redirect after successful login
   useEffect(() => {
-    if (user) navigate("/"); 
-  }, [user, navigate]);
+    if (isAuthenticated) navigate("/");
+  }, [isAuthenticated, navigate]);
 
   return (
     <div className="relative min-h-screen flex items-center justify-center px-4">

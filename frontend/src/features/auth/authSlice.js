@@ -86,6 +86,7 @@ const authSlice = createSlice({
     loading: false,
     error: null,
     isAuthenticated: false,
+    signupSuccess: false,
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -98,12 +99,14 @@ const authSlice = createSlice({
       .addCase(registerUser.fulfilled, (state, action) => {
         state.loading = false;
         state.user = action.payload;
-        state.isAuthenticated = true;
+        // Don't mark as authenticated on signup; just flag success
+        state.signupSuccess = true;
         toast.success("Registration Successful!");
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload?.message || "Registration failed";
+        state.signupSuccess = false;
         toast.error(action.payload || "Registration failed!");
       });
 
