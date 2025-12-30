@@ -37,7 +37,7 @@ const AdminLoginPage = () => {
         className="hidden lg:block w-1/2 bg-cover bg-center"
         style={{
           backgroundImage:
-            "url(https://media.istockphoto.com/id/1448167415/photo/smiling-indian-businessman-in-suit-and-glasses-with-laptop-near-office-building.jpg)",
+            "url(https://img.freepik.com/free-vector/flat-design-illustration-customer-support_23-2148887720.jpg?semt=ais_hybrid&w=740&q=80)",
         }}
       />
 

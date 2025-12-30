@@ -23,6 +23,7 @@ function UserLogin() {
   const handleSubmit = (e) => {
     e.preventDefault();
     dispatch(loginUser({ email: form.email, password: form.password }));
+    setForm({ email: "", password: "" });
   };
 
   // Redirect after successful login

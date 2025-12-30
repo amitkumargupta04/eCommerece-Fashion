@@ -14,7 +14,6 @@ function UserSignup() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { loading, error, user, signupSuccess } = useSelector((state) => state.auth);
-  const { isAuthenticated } = useSelector((state) => state.auth);
 
   // Generic input handler
   const handleChange = (e) => {
@@ -31,6 +30,7 @@ function UserSignup() {
         password: form.password,
       })
     );
+    setForm({ fullname: "", email: "", password: "" });
   };
 
   useEffect(() => {
