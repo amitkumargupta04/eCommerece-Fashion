@@ -1,16 +1,15 @@
-import React from "react";
-import Sidebar from "./Sidebar";
-import { Outlet } from "react-router-dom";
+import React from 'react'
+import SideBar from './Sidebar';
+import { Outlet } from 'react-router-dom';
 
-const AdminLayout = () => {
+function AdminLayout() {
   return (
-    <div className="flex h-screen">
-      <Sidebar />
-      <div className="flex-1 bg-gray-950 p-6 overflow-auto">
-        <Outlet />
-      </div>
+    <div>
+      <SideBar>
+        <Outlet/>
+      </SideBar>
     </div>
-  );
-};
+  )
+}
 
 export default AdminLayout;

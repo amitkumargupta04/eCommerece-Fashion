@@ -1,7 +1,7 @@
 // UserProfile.jsx
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getUserProfile, logoutUser, updateUserProfile } from "../features/auth/authSlice";
+import { getUserProfile, logoutUser, updateUserProfile } from "../../features/auth/authSlice";
 import { toast } from "react-toastify";
 import {useNavigate} from "react-router-dom";
 

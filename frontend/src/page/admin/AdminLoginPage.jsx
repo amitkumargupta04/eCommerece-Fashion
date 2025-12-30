@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
-import { loginUser } from "../features/auth/authSlice";
+import { loginUser } from "../../features/auth/authSlice";
 import { useNavigate } from "react-router-dom";
 
 const AdminLoginPage = () => {
@@ -17,8 +17,8 @@ const AdminLoginPage = () => {
 
   //Redirect after successful admin login
   useEffect(() => {
-    if (isAuthenticated && user?.role === "admin") {
-      navigate("/admin/dashboard");
+    if (isAuthenticated && user?.role?.toLowerCase() === "admin") {
+      navigate("/admin", { replace: true });
     }
   }, [isAuthenticated, user, navigate]);
 
@@ -29,7 +29,6 @@ const AdminLoginPage = () => {
 
   return (
     <div className="min-h-screen flex bg-gray-950">
-
       {/* LEFT IMAGE */}
       <motion.div
         initial={{ opacity: 0, x: -100 }}

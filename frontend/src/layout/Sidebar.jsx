@@ -1,89 +1,93 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { FaRegBell, FaDollarSign, FaCog } from "react-icons/fa";
-import { CgProfile } from "react-icons/cg";
-import { RiArrowDropDownLine } from "react-icons/ri";
 import { RxDashboard } from "react-icons/rx";
-import { TbArticle } from "react-icons/tb";
-import { MdOutlineRateReview, MdOutlineAnalytics } from "react-icons/md";
+import { TbShirt } from "react-icons/tb";
+import { BiCategoryAlt } from "react-icons/bi";
+import { MdOutlineShoppingBag, MdCategory } from "react-icons/md";
+import { FaUsers } from "react-icons/fa";
+import { GiKnightBanner } from "react-icons/gi";
 
 function SideBar({ children }) {
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
 
   const menus = [
-    { name: "Dashboard", icon: <RxDashboard />, path: "/admin/dashboard" },
-    { name: "Article", icon: <TbArticle />, path: "/admin/article" },
-    { name: "Review Article", icon: <MdOutlineRateReview />, path: "/admin/review" },
-    { name: "Analytics Page", icon: <MdOutlineAnalytics />, path: "/admin/analytics" },
-    { name: "Earning", icon: <FaDollarSign />, path: "/admin/earning" },
-    { name: "Profile & Setting", icon: <FaCog />, path: "/admin/profile" },
+    {
+      name: "Dashboard",
+      icon: <RxDashboard />,
+      path: "/admin/dashboard",
+    },
+    {
+      name: "Products",
+      icon: <TbShirt />,
+      path: "/admin/products",
+    },
+    {
+      name: "Categories",
+      icon: <MdCategory />,
+      path: "/admin/categories",
+    },
+    {
+      name: "Orders",
+      icon: <MdOutlineShoppingBag />,
+      path: "/admin/orders",
+    },
+    {
+      name: "Customers",
+      icon: <FaUsers />,
+      path: "/admin/customers",
+    },
+    {
+      name: "Banners",
+      icon: <GiKnightBanner/>,
+      path: "/admin/banners",
+    }
   ];
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#292A2D]">
-      {/* Top Strip */}
-
-      {/* Header */}
-      <div className="bg-[#292A2D] px-4 py-4 flex justify-between items-center w-full z-50 relative">
-        {/* Left */}
-        <div className="flex items-center gap-3">
-          {/* Hamburger - mobile only */}
-          <button
-            onClick={() => setIsOpen(true)}
-            className="md:hidden text-white text-2xl"
-          >
-            ☰
-          </button>
-
-          <div className="text-white">
-            <h1 className="font-bold text-3xl">Journel</h1>
-            <p className="text-xl">
-              of <span className="text-orange-500">In</span>d
-              <span className="text-green-600">ia</span>
-            </p>
+    <div className="min-h-screen bg-[#292A2D] text-white">
+      {/* HEADER  */}
+      <header className="w-full bg-[#292A2D] border-b border-gray-700">
+        <div className="flex items-center justify-between px-4 py-4 h-16">
+          {/* Left */}
+          <div className="flex items-center gap-3">
+            {/* Mobile hamburger */}
+            <button
+              onClick={() => setIsOpen(true)}
+              className="md:hidden text-2xl"
+            >
+              ☰
+            </button>
+            <h1 className="text-xl font-semibold">
+              Welcome <span className="text-orange-500">Admin</span>
+            </h1>
           </div>
-        </div>
 
-        {/* Right */}
-        <div className="flex gap-4 items-center text-white">
-          <button className="bg-[#1F1F1F] p-3 rounded-xl">
-            <FaRegBell />
+          {/* Right */}
+          <button className="bg-black px-4 py-2 rounded-md text-sm hover:bg-gray-900 transition">
+            Logout
           </button>
-          <div className="flex items-center cursor-pointer">
-            <span className="hidden sm:block">Contributor</span>
-            <RiArrowDropDownLine className="text-3xl" />
-          </div>
-          <CgProfile className="text-xl cursor-pointer" />
         </div>
-      </div>
+      </header>
 
-      {/* Body */}
-      <div className="flex flex-1">
-        {/* Overlay - Mobile */}
-        {isOpen && (
-          <div
-            onClick={() => setIsOpen(false)}
-            className="fixed inset-0 bg-black/50 z-40 md:hidden"
-          />
-        )}
-
-        {/* Sidebar */}
-        <div
-          className={`fixed md:sticky top-0 left-0 z-50 md:h-screen h-screen
-            w-64 bg-[#292A2D] px-4 space-y-2
-            transform transition-transform duration-300
-            ${isOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0 flex flex-col`}
+      {/*  BODY */}
+      <div className="flex min-h-[calc(100vh-64px)]">
+        {/* SIDEBAR */}
+        <aside
+          className={`fixed md:static top-16 left-0 z-40 min-h-[calc(100vh-64px)] w-64
+          bg-[#292A2D] border-r border-gray-700
+          px-4 py-4 space-y-2
+          transform transition-transform duration-300
+          ${isOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}
         >
-          {/* Close button (mobile) */}
+          {/* Close btn mobile */}
           <button
             onClick={() => setIsOpen(false)}
-            className="md:hidden text-white text-2xl mb-4 self-end"
+            className="md:hidden text-2xl mb-4 self-end"
           >
             ✕
           </button>
 
-          {/* Menu Items */}
           {menus.map((menu, i) => {
             const isActive = location.pathname.startsWith(menu.path);
 
@@ -92,21 +96,24 @@ function SideBar({ children }) {
                 key={i}
                 to={menu.path}
                 onClick={() => setIsOpen(false)}
-                className={`flex items-center gap-4 px-3 py-2 rounded-md text-gray-300 transition-all
-                  ${isActive
+                className={`flex items-center gap-4 px-3 py-2 rounded-md transition
+                ${
+                  isActive
                     ? "bg-black text-white ring-1 ring-white ring-offset-2 ring-offset-[#292A2D]"
-                    : "hover:bg-black"}
-                `}
+                    : "text-gray-300 hover:bg-black"
+                }`}
               >
-                <span className="text-xl shrink-0">{menu.icon}</span>
+                <span className="text-xl">{menu.icon}</span>
                 <span className="text-sm font-medium">{menu.name}</span>
               </Link>
             );
           })}
-        </div>
+        </aside>
 
-        {/* Page Content */}
-        <div className="flex-1 bg-[#292A2D] px-4 overflow-y-auto">{children}</div>
+        {/* PAGE CONTENT */}
+        <main className="flex-1 px-4 py-4 ml-0 md:ml-64 min-h-[calc(100vh-64px)]">
+          {children}
+        </main>
       </div>
     </div>
   );
