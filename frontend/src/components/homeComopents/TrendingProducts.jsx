@@ -76,5 +76,5 @@ export default function TrendingProducts() {
     },
   ];
 
-  return <ProductCarousel title="🔥 Trending Products" products={products} />;
+  return <ProductCarousel title="Trending Products" products={products} />;
 }

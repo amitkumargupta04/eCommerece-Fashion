@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import axios from "axios";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { axiosInstance } from "../../utils/axiosInstance";
 
 export default function Carousel() {
   const [banner, setBanners] = useState([]);
@@ -12,7 +13,7 @@ export default function Carousel() {
   // Fetch banners
   const getBanner = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/v1/banner/get");
+      const res = await axiosInstance.get("/banner/get");
       if (res.data.success) {
         setBanners(res.data.banners);
       }
@@ -45,7 +46,7 @@ export default function Carousel() {
   if (banner.length === 0) return null;
 
   return (
-    <div className="relative w-full h-[500px] sm:h-[500px] lg:h-[500px] overflow-hidden">
+    <div className="relative w-full h-[220px] sm:h-[350px] lg:h-[500px] overflow-hidden">
       {/* Slides */}
       {banner.map((item, index) => (
         <div
@@ -58,7 +59,7 @@ export default function Carousel() {
           <img
             src={item.image}
             alt={item.title}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover object-center block"
           />
 
           {/* Overlay Text */}

@@ -76,5 +76,5 @@ export default function NewArrivals() {
     },
   ];
 
-  return <ProductCarousel title="🆕 New Arrivals" products={products} />;
+  return <ProductCarousel title="New Arrivals" products={products} />;
 }

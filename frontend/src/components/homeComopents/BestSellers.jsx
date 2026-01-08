@@ -76,5 +76,5 @@ export default function BestSellers() {
     },
   ];
 
-  return <ProductCarousel title="⭐ Best Sellers" products={products} />;
+  return <ProductCarousel title="Best Sellers" products={products} />;
 }
