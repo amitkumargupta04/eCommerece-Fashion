@@ -34,7 +34,8 @@ export const loadUser = createAsyncThunk(
   "auth/loadUser",
   async (_, { rejectWithValue }) => {
     try {
-      const res = await axiosInstance.get("/auth/me");
+      // backend exposes profile at /user/profile (mounted at /api/v1/user)
+      const res = await axiosInstance.get("/user/profile");
       return res.data.user;
     } catch (err) {
       return rejectWithValue(err.response?.data);
@@ -48,6 +49,7 @@ export const logoutUser = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       await axiosInstance.post("/user/logout");
+      localStorage.removeItem("token");
       return true;
     } catch (err) {
       return rejectWithValue(err.response?.data);
@@ -71,7 +73,7 @@ export const updateUserProfile = createAsyncThunk(
   "auth/updateUserProfile",
   async (userData, { rejectWithValue }) => {
     try {
-      const res = await axiosInstance.put("/user/update-profile", userData); 
+      const res = await axiosInstance.put("/user/update-profile", userData);
       return res.data.user;
     } catch (err) {
       return rejectWithValue(err.response?.data);
@@ -88,7 +90,16 @@ const authSlice = createSlice({
     isAuthenticated: false,
     signupSuccess: false,
   },
-  reducers: {},
+  reducers: {
+    logout: (state) => {
+      state.user = null;
+      state.isAuthenticated = false;
+      state.loading = false;
+      state.error = null;
+      localStorage.removeItem("token");
+    },
+  },
+
   extraReducers: (builder) => {
     // Register
     builder
@@ -120,7 +131,7 @@ const authSlice = createSlice({
         state.loading = false;
         state.user = action.payload;
         state.isAuthenticated = true;
-        toast.success("Login Successful!");
+        //toast.success("Login Successful!");
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
@@ -186,4 +197,6 @@ const authSlice = createSlice({
   },
 });
 
+
+export const { logout } = authSlice.actions;
 export default authSlice.reducer;

@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import axios from "axios";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { axiosInstance } from "../../utils/axiosInstance";

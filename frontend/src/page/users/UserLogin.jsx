@@ -3,16 +3,21 @@ import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../../features/auth/authSlice";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { toast } from "react-toastify";
+import { useRef } from "react";
+import { logout } from "../../features/auth/authSlice";
 
 function UserLogin() {
   const [form, setForm] = useState({
     email: "",
-    password: ""
+    password: "",
   });
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { loading, error, user, isAuthenticated } = useSelector((state) => state.auth);
+  const { loading, error, user, isAuthenticated } = useSelector(
+    (state) => state.auth
+  );
 
   // Generic input change handler
   const handleChange = (e) => {
@@ -26,10 +31,24 @@ function UserLogin() {
     setForm({ email: "", password: "" });
   };
 
-  // Redirect after successful login
+  const toastShown = useRef(false); // for duplicate prevention
+
   useEffect(() => {
-    if (isAuthenticated) navigate("/");
-  }, [isAuthenticated, navigate]);
+    if (!isAuthenticated || !user) return; // ignore if not logged in
+    if (toastShown.current) return; // already shown
+
+    toastShown.current = true;
+
+    if (user.role?.toLowerCase() === "user") {
+      toast.success("Login successfully");
+      navigate("/", { replace: true });
+    } else if (user.role?.toLowerCase() === "admin") {
+      toast.info("Please login from Admin panel");
+      dispatch(logout()); // force logout
+      localStorage.removeItem("token");
+      navigate("/admin-login", { replace: true });
+    }
+  }, [isAuthenticated, user, navigate, dispatch]);
 
   return (
     <div className="relative min-h-screen flex items-center justify-center px-4">
@@ -91,7 +110,11 @@ function UserLogin() {
             disabled={loading}
             className="w-full bg-black text-white py-2 rounded hover:bg-gray-800 transition flex items-center justify-center"
           >
-            {loading ? <span className="animate-pulse">Logging in...</span> : "Login"}
+            {loading ? (
+              <span className="animate-pulse">Logging in...</span>
+            ) : (
+              "Login"
+            )}
           </button>
         </form>
 

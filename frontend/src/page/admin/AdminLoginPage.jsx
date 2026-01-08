@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../../features/auth/authSlice";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const AdminLoginPage = () => {
   const dispatch = useDispatch();
@@ -11,14 +12,19 @@ const AdminLoginPage = () => {
   const { loading, isAuthenticated, user, error } = useSelector(
     (state) => state.auth
   );
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  //Redirect after successful admin login
   useEffect(() => {
-    if (isAuthenticated && user?.role?.toLowerCase() === "admin") {
-      navigate("/admin", { replace: true });
+    if (isAuthenticated && user) {
+      if (user.role?.toLowerCase() === "admin") {
+        toast.success("Login Successfully")
+        navigate("/admin", { replace: true });
+      } else {
+        localStorage.removeItem("token");
+        toast.error("You are not authorized as Admin");
+        navigate("/admin-login", { replace: true });
+      }
     }
   }, [isAuthenticated, user, navigate]);
 

@@ -1,15 +1,32 @@
 import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { RxDashboard } from "react-icons/rx";
 import { TbShirt } from "react-icons/tb";
 import { BiCategoryAlt } from "react-icons/bi";
 import { MdOutlineShoppingBag, MdCategory } from "react-icons/md";
 import { FaUsers } from "react-icons/fa";
 import { GiKnightBanner } from "react-icons/gi";
+import { useDispatch } from "react-redux";
+import { toast } from "react-toastify";
+import { logoutUser } from "../features/auth/authSlice";
 
 function SideBar({ children }) {
   const location = useLocation();
   const [isOpen, setIsOpen] = useState(false);
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  // Logout handler
+  const handleLogout = async () => {
+    try {
+      await dispatch(logoutUser()).unwrap(); // Redux logout
+      toast.success("Logged out successfully!");
+      navigate("/admin-login"); // redirect to login page
+    } catch (err) {
+      toast.error("Failed to logout!");
+    }
+  };
 
   const menus = [
     {
@@ -39,15 +56,15 @@ function SideBar({ children }) {
     },
     {
       name: "Banners",
-      icon: <GiKnightBanner/>,
+      icon: <GiKnightBanner />,
       path: "/admin/banners",
-    }
+    },
   ];
 
   return (
     <div className="min-h-screen bg-[#292A2D] text-white">
       {/* HEADER  */}
-      <header className="w-full bg-[#292A2D] border-b border-gray-700">
+      <header className="w-full bg-[#292A2D] border-b border-gray-700 py-2">
         <div className="flex items-center justify-between px-4 py-4 h-16">
           {/* Left */}
           <div className="flex items-center gap-3">
@@ -64,7 +81,7 @@ function SideBar({ children }) {
           </div>
 
           {/* Right */}
-          <button className="bg-black px-4 py-2 rounded-md text-sm hover:bg-gray-900 transition">
+          <button className="bg-black px-4 py-2 rounded-md text-sm hover:bg-gray-900 transition" onClick={handleLogout}>
             Logout
           </button>
         </div>

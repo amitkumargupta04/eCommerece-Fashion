@@ -3,6 +3,7 @@ import { Search, ShoppingCart, User } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { logoutUser } from "../features/auth/authSlice";
+import { toast } from "react-toastify";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -25,6 +26,8 @@ export default function Navbar() {
 
   const handleLogout = () => {
     dispatch(logoutUser());
+    toast.success("Logout successfully")
+    toastShown.current = false; // 🔄 reset ref
     navigate("/login");
   };
 
