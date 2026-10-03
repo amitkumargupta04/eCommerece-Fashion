@@ -1,49 +1,57 @@
 import React from "react";
-import { TbWorld } from "react-icons/tb";
-import { TbTruckReturn } from "react-icons/tb";
-import { FiPhoneCall } from "react-icons/fi";
-import { RiSecurePaymentLine } from "react-icons/ri";
+import { Globe, RotateCcw, Headphones, ShieldCheck } from "lucide-react";
 
-function OurProcess() {
+export default function OurProcess() {
+  const features = [
+    {
+      icon: Globe,
+      title: "Global Express Delivery",
+      description:
+        "Complimentary expedited shipping on premium orders with full end-to-end telemetry tracking.",
+    },
+    {
+      icon: RotateCcw,
+      title: "Seamless 30-Day Returns",
+      description:
+        "Complimentary courier pickup and instant store credit or full refund on all returns.",
+    },
+    {
+      icon: Headphones,
+      title: "24/7 VIP Concierge",
+      description:
+        "Our dedicated fashion advisors are available round-the-clock for styling and order support.",
+    },
+    {
+      icon: ShieldCheck,
+      title: "100% Authentic Guarantee",
+      description:
+        "Direct manufacturer sourcing and verified authentic luxury certification on every piece.",
+    },
+  ];
+
   return (
-    <div className="bg-purple-100 px-8 sm:px-10 md:px-14 lg:px-20 py-10 mt-10">
-      <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-10">
-        <div className="flex flex-col items-center justify-center text-center mb-1">
-          <TbWorld size={50} className="text-[#35B7A8]" />
-          <p className="font-bold mt-1">Worldwide Shipping</p>
-          <p className="text-gray-500 mt-1">
-            We deliver products to customers across the globe quickly and
-            reliably,Enjoy hassle-free international shipping with real-time
-            tracking.
-          </p>
-        </div>
-        <div className="flex flex-col justify-center items-center text-center">
-          <TbTruckReturn size={50} className="text-[#35B7A8]" />
-          <p className="font-bold mt-1">Free Returns</p>
-          <p className="text-gray-500 mt-1">
-            Customers can return products within a specified period if they are
-            unsatisfied or receive damaged items
-          </p>
-        </div>
-        <div className="flex flex-col justify-center items-center text-center">
-          <FiPhoneCall size={50} className="text-[#35B7A8]" />
-          <p className="font-bold mt-1">24/7 Support</p>
-          <p className="text-gray-500 mt-1">
-            Our support team is available around the clock to assist customers
-            with any inquiries or issues they may have
-          </p>
-        </div>
-        <div className="flex flex-col justify-center items-center text-center">
-          <RiSecurePaymentLine size={50} className="text-[#35B7A8]" />
-          <p className="font-bold mt-1">Flexible Payment</p>
-          <p className="text-gray-500 mt-1">
-            We ensure secure payment processing to protect your financial
-            information and provide peace of mind
-          </p>
-        </div>
+    <section className="w-full my-12 bg-neutral-950 border border-white/20 rounded-3xl p-8 sm:p-12 shadow-2xl">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        {features.map((item, index) => {
+          const Icon = item.icon;
+          return (
+            <div
+              key={index}
+              className="flex flex-col items-center text-center p-4 rounded-2xl hover:bg-white/5 transition-colors duration-300"
+            >
+              <div className="w-14 h-14 rounded-2xl bg-black border border-white/30 text-white flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform">
+                <Icon className="w-7 h-7" />
+              </div>
+              <h4 className="text-base sm:text-lg font-bold text-white uppercase tracking-wide mb-2">
+                {item.title}
+              </h4>
+              <p className="text-xs sm:text-sm text-neutral-400 leading-relaxed max-w-xs">
+                {item.description}
+              </p>
+            </div>
+          );
+        })}
       </div>
-    </div>
+    </section>
   );
 }
-
-export default OurProcess;

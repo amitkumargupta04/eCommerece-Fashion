@@ -1,32 +1,32 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ChevronLeft, ChevronRight, ArrowUpRight, ArrowRight, Sparkles } from "lucide-react";
-import { categoryService } from "@/services";
+import { subCategoryService } from "@/services";
 
-export default function ShopByCategory() {
-  const [categories, setCategories] = useState([]);
+export default function ShopBySubCategory() {
+  const [subCategories, setSubCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [visibleCount, setVisibleCount] = useState(4);
 
   useEffect(() => {
-    const fetchCategories = async () => {
+    const fetchSubCategories = async () => {
       try {
-        const res = await categoryService.getAllCategories();
+        const res = await subCategoryService.getSubCategories();
         const data = Array.isArray(res?.data)
           ? res.data
           : Array.isArray(res)
           ? res
           : [];
-        setCategories(data);
+        setSubCategories(data);
       } catch (err) {
-        console.error("Category Fetch Error:", err);
-        setCategories([]);
+        console.error("SubCategory Fetch Error:", err);
+        setSubCategories([]);
       } finally {
         setLoading(false);
       }
     };
-    fetchCategories();
+    fetchSubCategories();
   }, []);
 
   useEffect(() => {
@@ -42,7 +42,7 @@ export default function ShopByCategory() {
     return () => window.removeEventListener("resize", updateVisible);
   }, []);
 
-  const maxIndex = Math.max(0, categories.length - Math.floor(visibleCount));
+  const maxIndex = Math.max(0, subCategories.length - Math.floor(visibleCount));
 
   const prevSlide = () => {
     setCurrentIndex((prev) => Math.max(prev - 1, 0));
@@ -55,7 +55,7 @@ export default function ShopByCategory() {
   if (loading) {
     return (
       <section className="w-full py-8">
-        <div className="h-6 w-36 bg-neutral-800 rounded animate-pulse mb-6" />
+        <div className="h-6 w-40 bg-neutral-800 rounded animate-pulse mb-6" />
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {[1, 2, 3, 4].map((i) => (
             <div
@@ -68,7 +68,7 @@ export default function ShopByCategory() {
     );
   }
 
-  if (categories.length === 0) {
+  if (subCategories.length === 0) {
     return null;
   }
 
@@ -78,10 +78,10 @@ export default function ShopByCategory() {
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6 border-b border-white/10 pb-4">
         <div>
           <span className="text-xs uppercase font-semibold tracking-widest text-neutral-400 block mb-1">
-            Curated Collections
+            Tailored Sub-Collections
           </span>
           <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white flex items-center gap-3">
-            <span>Shop By Category</span>
+            <span>Shop By Sub-Category</span>
             <span className="h-1.5 w-1.5 rounded-full bg-white hidden sm:inline-block" />
           </h2>
         </div>
@@ -95,12 +95,12 @@ export default function ShopByCategory() {
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </Link>
 
-          {categories.length > visibleCount && (
+          {subCategories.length > visibleCount && (
             <div className="flex items-center gap-2">
               <button
                 onClick={prevSlide}
                 disabled={currentIndex === 0}
-                aria-label="Previous Category"
+                aria-label="Previous Sub-Category"
                 className="w-10 h-10 flex items-center justify-center rounded-full bg-neutral-900 border border-white/20 text-white hover:bg-white hover:text-black transition-all disabled:opacity-20 disabled:pointer-events-none cursor-pointer shadow-md"
               >
                 <ChevronLeft className="w-5 h-5" />
@@ -108,7 +108,7 @@ export default function ShopByCategory() {
               <button
                 onClick={nextSlide}
                 disabled={currentIndex >= maxIndex}
-                aria-label="Next Category"
+                aria-label="Next Sub-Category"
                 className="w-10 h-10 flex items-center justify-center rounded-full bg-neutral-900 border border-white/20 text-white hover:bg-white hover:text-black transition-all disabled:opacity-20 disabled:pointer-events-none cursor-pointer shadow-md"
               >
                 <ChevronRight className="w-5 h-5" />
@@ -126,36 +126,36 @@ export default function ShopByCategory() {
             transform: `translateX(-${currentIndex * (100 / visibleCount)}%)`,
           }}
         >
-          {categories.map((cat) => {
-            const catId = cat.id || cat._id;
+          {subCategories.map((sub) => {
+            const subId = sub.id || sub._id;
             const imgSrc =
-              cat.imageUrl ||
-              (Array.isArray(cat.imageUrls) && cat.imageUrls[0]) ||
+              sub.imageUrl ||
+              (Array.isArray(sub.imageUrls) && sub.imageUrls[0]) ||
               "";
 
             return (
               <div
-                key={catId}
+                key={subId}
                 style={{
                   flex: `0 0 calc(${100 / visibleCount}% - ${(6 * (visibleCount - 1)) / visibleCount}px)`,
                   minWidth: "250px",
                 }}
               >
                 <Link
-                  to={`/products?categoryId=${catId}`}
+                  to={`/products?subCategoryId=${subId}`}
                   className="group relative block aspect-[4/5] rounded-2xl overflow-hidden border border-white/20 hover:border-white transition-all duration-500 bg-neutral-950 hover:shadow-[0_0_30px_rgba(255,255,255,0.15)]"
                 >
                   {imgSrc ? (
                     <img
                       src={imgSrc}
-                      alt={cat.name}
+                      alt={sub.name}
                       className="w-full h-full object-cover object-center group-hover:scale-110 transition-transform duration-700 ease-out"
                     />
                   ) : (
                     <div className="w-full h-full bg-neutral-900 flex flex-col items-center justify-center p-6 text-center">
                       <Sparkles className="w-8 h-8 text-neutral-600 mb-2" />
                       <span className="text-lg font-bold text-neutral-400 uppercase tracking-wider">
-                        {cat.name}
+                        {sub.name}
                       </span>
                     </div>
                   )}
@@ -168,14 +168,14 @@ export default function ShopByCategory() {
                     <div className="flex items-end justify-between gap-2">
                       <div className="flex-1">
                         <span className="text-[10px] uppercase font-bold tracking-widest text-neutral-400 block mb-1">
-                          Category
+                          {sub.categoryName || "Sub-Category"}
                         </span>
                         <h3 className="text-xl font-bold text-white uppercase tracking-wide group-hover:text-neutral-200 transition-colors truncate">
-                          {cat.name}
+                          {sub.name}
                         </h3>
-                        {cat.description && (
+                        {sub.description && (
                           <p className="text-xs text-neutral-400 line-clamp-1 mt-0.5">
-                            {cat.description}
+                            {sub.description}
                           </p>
                         )}
                       </div>

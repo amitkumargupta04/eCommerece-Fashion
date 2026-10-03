@@ -16,13 +16,9 @@ import VerifyEmail from "@/pages/users/VerifyEmail";
 import ForgotPassword from "@/pages/users/ForgotPassword";
 import ResetPassword from "@/pages/users/ResetPassword";
 import Profile from "@/pages/users/Profile";
-//import HomePage from "../pages/home/Home.jsx";
+import HomePage from "../pages/home/Home.jsx";
+import ProductsPage from "@/pages/products/ProductsPage";
 
-// Dummy/Actual Public Pages
-//const HomePage = () => <div className="p-6 text-xl">Home Page (Public)</div>;
-// const ProductsPage = () => (
-//   <div className="p-6 text-xl">Products Listing (Public)</div>
-// );
 const ProductDetailsPage = () => (
   <div className="p-6 text-xl">Product Details (Public)</div>
 );
@@ -44,15 +40,15 @@ const AppRoutes = () => {
     <BrowserRouter>
       <Routes>
         {/* ==================== PUBLIC USER ROUTES ==================== */}
-        <Route element = {<UserLayout/>}>
-          {/* <Route path="/" element={<HomePage />} /> */}
-          {/* <Route path="/products" element={<ProductsPage />} /> */}
+        <Route element={<UserLayout />}>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/products" element={<ProductsPage />} />
           <Route path="/product/:id" element={<ProductDetailsPage />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/signup" element = {<Signup/>}/>
-          <Route path="/verify-email" element = {<VerifyEmail/>}/>
-          <Route path="/forgot-password" element = {<ForgotPassword/>}/>
-          <Route path="/reset-password" element = {<ResetPassword/>}/>
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/verify-email" element={<VerifyEmail />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
 
           {/* ==================== PROTECTED USER ROUTES ==================== */}
           <Route element={<UserProtectedRoute />}>

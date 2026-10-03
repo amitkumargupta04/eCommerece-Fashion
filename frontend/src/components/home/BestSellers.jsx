@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import api from "@/api/axios";
+import { productService } from "@/services";
 import ProductCarousel from "@/global/ProductCarousel";
 
 export default function BestSellers() {
@@ -9,10 +9,22 @@ export default function BestSellers() {
   useEffect(() => {
     const fetchBestSellers = async () => {
       try {
-        const res = await api.get("/product/?page=0&size=10&isBestSeller=true");
-        setProducts(res.data.data || []);
+        const res = await productService.getProducts({
+          page: 0,
+          size: 10,
+          isBestSeller: true,
+          sortBy: "createdAt",
+          sortDirection: "desc",
+        });
+        const productList = Array.isArray(res?.data)
+          ? res.data
+          : Array.isArray(res)
+          ? res
+          : [];
+        setProducts(productList);
       } catch (err) {
-        console.error("BestSellers Fetch Error:", err);
+        console.error("Best Sellers Fetch Error:", err);
+        setProducts([]);
       } finally {
         setLoading(false);
       }
@@ -20,11 +32,17 @@ export default function BestSellers() {
     fetchBestSellers();
   }, []);
 
+  if (!loading && products.length === 0) {
+    return null;
+  }
+
   return (
     <ProductCarousel
       title="Best Sellers"
+      subtitle="Iconic Wardrobe Staples"
       products={products}
       loading={loading}
+      viewAllLink="/products?isBestSeller=true"
     />
   );
 }

@@ -20,117 +20,153 @@ function Footer() {
     e.preventDefault();
     console.log("Email submitted:", email);
     setEmail("");
-  }
+  };
+
   return (
-    <div>
-      {/* Part 1  */}
-      <div className="bg-gray-200">
-        <div
-          className="py-6 px-2 sm:px-16 md:px-28 lg:px-44 
-          flex flex-col sm:flex-row gap-4 sm:gap-0 
-          justify-between items-center sm:items-center"
-        >
+    <footer className="bg-black text-white border-t border-white/10">
+      {/* Newsletter Section */}
+      <div className="bg-neutral-950 border-b border-white/10">
+        <div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row gap-6 justify-between items-center">
           <div>
-            <p className="text-xl">Sign up to Newsletter</p>
+            <h3 className="text-lg sm:text-xl font-bold uppercase tracking-wider text-white">
+              Join The Inner Circle
+            </h3>
+            <p className="text-xs sm:text-sm text-neutral-400 mt-0.5">
+              Receive private sales, early access & curated arrivals.
+            </p>
           </div>
-          <div>
-            <form className="relative w-full sm:w-64 md:w-75 lg:w-96" onSubmit={handleSubmit}>
+
+          <div className="w-full sm:w-auto">
+            <form
+              className="relative w-full sm:w-80 md:w-96 flex items-center"
+              onSubmit={handleSubmit}
+            >
               <input
                 type="email"
-                placeholder="Your email address"
-                className="bg-white border border-gray-300 py-2 px-5 pr-10 w-full rounded focus:outline-none"
+                placeholder="Enter your email address..."
+                className="bg-black border border-white/20 hover:border-white focus:border-white py-2.5 px-4 pr-12 w-full rounded-xl text-white text-sm placeholder-neutral-500 focus:outline-none transition-colors"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                required
               />
 
-              {/* React Icon Button */}
               <button
-                type="button"
-                className="absolute right-2 top-1/2 -translate-y-1/2 text-black cursor-pointer mr-2"
+                type="submit"
+                aria-label="Subscribe"
+                className="absolute right-1.5 top-1/2 -translate-y-1/2 w-8 h-8 rounded-lg bg-white text-black flex items-center justify-center hover:bg-neutral-200 transition-colors cursor-pointer"
               >
-                <FiSend size={18} />
+                <FiSend size={15} />
               </button>
             </form>
           </div>
-          <div className="items-center">
-            <p className="text-xl">Follow us on</p>
-            <div className="flex items-center gap-4 text-xl mt-3 text-gray-600">
-              <FaFacebook className="cursor-pointer hover:text-blue-600" />
-              <FaInstagram className="cursor-pointer hover:text-pink-600" />
-              <FaTwitter className="cursor-pointer hover:text-blue-400" />
-              <FaYoutube className="cursor-pointer hover:text-red-600" />
-            </div>
+
+          <div className="flex items-center gap-4 text-neutral-400">
+            <span className="text-xs uppercase tracking-wider text-neutral-400 font-semibold mr-1">
+              Connect:
+            </span>
+            <a href="#" className="hover:text-white transition-colors" aria-label="Instagram">
+              <FaInstagram size={18} />
+            </a>
+            <a href="#" className="hover:text-white transition-colors" aria-label="Twitter">
+              <FaTwitter size={18} />
+            </a>
+            <a href="#" className="hover:text-white transition-colors" aria-label="Facebook">
+              <FaFacebook size={18} />
+            </a>
+            <a href="#" className="hover:text-white transition-colors" aria-label="YouTube">
+              <FaYoutube size={18} />
+            </a>
           </div>
         </div>
       </div>
-      {/* Part 2  */}
-      <div className="bg-black py-10 px-8 sm:px-16 md:px-28 lg:px-35 ">
-        <div className="text-white grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-15 ">
-          <div className="space-y-4 cursor-pointer ">
-            <p className="text-xl font-medium">Store Information</p>
-            <div className="space-y-5" >
-              <p className="flex items-center gap-3 text-gray-400">
-                <FaLocationDot size={18} className="mb-3"/>
-                Gupta enterprises, kakarahwa bazar, siddharth nagar UP 272206
+
+      {/* Main Footer Links */}
+      <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10">
+          <div className="space-y-4">
+            <h4 className="text-base font-bold uppercase tracking-wider text-white">
+              Boutique Information
+            </h4>
+            <div className="space-y-3 text-sm text-neutral-400">
+              <p className="flex items-start gap-3">
+                <FaLocationDot size={16} className="mt-1 flex-shrink-0 text-white" />
+                <span>FashionX Atelier, Premium Fashion District, Mumbai, India</span>
               </p>
-              <p className="flex items-center gap-3 text-gray-400">
-                <BsFillTelephoneForwardFill size={18}/>
-                +91 6392861704
+              <p className="flex items-center gap-3">
+                <BsFillTelephoneForwardFill size={15} className="flex-shrink-0 text-white" />
+                <span>+91 6392861704</span>
               </p>
-              <p className="flex items-center gap-3 text-gray-400 cursor-pointer">
-                <MdEmail size={18}/>
-                amit1704gupta@gmail.com 
+              <p className="flex items-center gap-3">
+                <MdEmail size={16} className="flex-shrink-0 text-white" />
+                <span>concierge@fashionx.com</span>
               </p>
             </div>
           </div>
-          <div className="space-y-2 cursor-pointer">
-            <p className="text-xl font-medium mb-4">Get to know Us</p>
-            <p className="text-gray-400">About us</p>
-            <p className="text-gray-400">Term and Policy</p>
-            <p className="text-gray-400">Careers</p>
-            <p className="text-gray-400">New blog</p>
-            <p className="text-gray-400">Contact us</p>
+
+          <div className="space-y-3">
+            <h4 className="text-base font-bold uppercase tracking-wider text-white">
+              The Brand
+            </h4>
+            <ul className="space-y-2 text-sm text-neutral-400">
+              <li><a href="#" className="hover:text-white transition-colors">Our Heritage</a></li>
+              <li><a href="#" className="hover:text-white transition-colors">Sustainability & Craft</a></li>
+              <li><a href="#" className="hover:text-white transition-colors">Careers & Press</a></li>
+              <li><a href="#" className="hover:text-white transition-colors">Private Styling</a></li>
+            </ul>
           </div>
-          <div className="space-y-2 cursor-pointer flex flex-col">
-            <p className="text-xl font-medium mb-4" >Information</p>
-            <p className="text-gray-400">Help Center</p>
-            <p className="text-gray-400">Press</p>
-            <p className="text-gray-400">FAQs</p>
-            <p className="text-gray-400">Size Guide</p>
-            <p className="text-gray-400">Payments</p>
+
+          <div className="space-y-3">
+            <h4 className="text-base font-bold uppercase tracking-wider text-white">
+              Client Services
+            </h4>
+            <ul className="space-y-2 text-sm text-neutral-400">
+              <li><a href="#" className="hover:text-white transition-colors">Client Support & FAQs</a></li>
+              <li><a href="#" className="hover:text-white transition-colors">Complimentary Shipping</a></li>
+              <li><a href="#" className="hover:text-white transition-colors">Returns & Exchanges</a></li>
+              <li><a href="#" className="hover:text-white transition-colors">Track Your Order</a></li>
+            </ul>
           </div>
-          <div className="space-y-2 cursor-pointer">
-            <p className="text-xl font-medium mb-4">Orders & Returns</p>
-            <p className="text-gray-400">Track Order</p>
-            <p className="text-gray-400">Delivery</p>
-            <p className="text-gray-400">Services</p>
-            <p className="text-gray-400">Return</p>
-            <p className="text-gray-400">Exchange</p>
+
+          <div className="space-y-3">
+            <h4 className="text-base font-bold uppercase tracking-wider text-white">
+              Legal & Terms
+            </h4>
+            <ul className="space-y-2 text-sm text-neutral-400">
+              <li><a href="#" className="hover:text-white transition-colors">Privacy Policy</a></li>
+              <li><a href="#" className="hover:text-white transition-colors">Terms of Service</a></li>
+              <li><a href="#" className="hover:text-white transition-colors">Cookie Preferences</a></li>
+              <li><a href="#" className="hover:text-white transition-colors">Authentication Guarantee</a></li>
+            </ul>
           </div>
         </div>
-        <div className="bg-gray-600 w-full h-px mt-12"></div>
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 text-white mt-12 gap-6">
-            <p className="flex items-center justify-center text-sm md:text-xl lg:text-2xl gap-2">
-                <IoShirtOutline  size={25}/>
-                GuptaG
-            </p>
-            <p className="flex items-center justify-center text-sm md:text-xl lg:text-2xl gap-2">
-                <BsFillTelephoneForwardFill size={25}/>
-                +91 6392861704
-            </p>
-            <p className="flex items-center justify-center text-sm md:text-xl lg:text-2xl gap-2">
-                <FaCarSide size={25}/>
-                Amount over $ 100
-            </p>
-            <p className="flex items-center justify-center text-sm md:text-xl lg:text-2xl gap-2">
-                <CiDiscount1 size={25}/>
-                Discount up to 10% 
-            </p>
+
+        {/* Feature Highlights Bar */}
+        <div className="border-t border-white/10 my-8"></div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-neutral-300 text-xs sm:text-sm">
+          <div className="flex items-center gap-2 justify-center py-2">
+            <IoShirtOutline size={20} className="text-white" />
+            <span>Curated Haute Couture</span>
+          </div>
+          <div className="flex items-center gap-2 justify-center py-2">
+            <BsFillTelephoneForwardFill size={16} className="text-white" />
+            <span>24/7 VIP Concierge</span>
+          </div>
+          <div className="flex items-center gap-2 justify-center py-2">
+            <FaCarSide size={18} className="text-white" />
+            <span>Express Global Delivery</span>
+          </div>
+          <div className="flex items-center gap-2 justify-center py-2">
+            <CiDiscount1 size={22} className="text-white" />
+            <span>Exclusive VIP Benefits</span>
+          </div>
         </div>
-        <div className="bg-gray-600 w-full h-px mt-12"></div>
-        <p className="text-gray-400 mt-4">© 2025 GuptaG. All rights reserved.</p>
+
+        <div className="border-t border-white/10 mt-6 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-neutral-500">
+          <p>© 2026 FashionX Atelier. All rights reserved.</p>
+          <p className="tracking-wider">DESIGNED IN MONOCHROME LUXURY</p>
+        </div>
       </div>
-    </div>
+    </footer>
   );
 }
 
