@@ -1,202 +1,230 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { axiosInstance } from "../../utils/axiosInstance";
-import { toast } from "react-toastify";
+import { authService } from "@/services";
 
-// Register User
-export const registerUser = createAsyncThunk(
-  "auth/registerUser",
-  async (userData, { rejectWithValue }) => {
+const tokenFromStorage = localStorage.getItem("accessToken");
+const userFromStorage = localStorage.getItem("user");
+
+let parsedUser = null;
+try {
+  parsedUser = userFromStorage ? JSON.parse(userFromStorage) : null;
+} catch (e) {
+  console.log(e);
+  localStorage.removeItem("user");
+}
+
+const initialState = {
+  user: parsedUser,
+  accessToken: tokenFromStorage || null,
+  tokenType: localStorage.getItem("tokenType") || "Bearer",
+  isAuthenticated: !!tokenFromStorage,
+  loading: false,
+  error: null,
+  success: null,
+};
+
+/* -------------------------------------------------------------------------- */
+/*                                Async Thunks                                */
+/* -------------------------------------------------------------------------- */
+
+export const loginThunk = createAsyncThunk(
+  "auth/login",
+  async (credentials, thunkAPI) => {
     try {
-      const res = await axiosInstance.post("/user/signup", userData);
-      return res.data.user;
-    } catch (err) {
-      return rejectWithValue(err.response?.data);
+      const response = await authService.login(credentials);
+      return response;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || "Login failed"
+      );
     }
   }
 );
 
-// // Login User
-export const loginUser = createAsyncThunk(
-  "auth/loginUser",
-  async (userData, { rejectWithValue }) => {
+export const signupThunk = createAsyncThunk(
+  "auth/signup",
+  async (userData, thunkAPI) => {
     try {
-      const res = await axiosInstance.post("/user/login", userData);
-      localStorage.setItem("token", res.data.token);
-
-      return res.data.user;
-    } catch (err) {
-      return rejectWithValue(err.response?.data?.message);
-    }
-  }
-);
-// Load Logged-in User
-export const loadUser = createAsyncThunk(
-  "auth/loadUser",
-  async (_, { rejectWithValue }) => {
-    try {
-      // backend exposes profile at /user/profile (mounted at /api/v1/user)
-      const res = await axiosInstance.get("/user/profile");
-      return res.data.user;
-    } catch (err) {
-      return rejectWithValue(err.response?.data);
+      const response = await authService.signup(userData);
+      return response;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || "Signup failed"
+      );
     }
   }
 );
 
-// Logout User
-export const logoutUser = createAsyncThunk(
-  "auth/logoutUser",
-  async (_, { rejectWithValue }) => {
+export const verifyEmailThunk = createAsyncThunk(
+  "auth/verify-email",
+  async (token, thunkAPI) => {
     try {
-      await axiosInstance.post("/user/logout");
-      localStorage.removeItem("token");
-      return true;
-    } catch (err) {
-      return rejectWithValue(err.response?.data);
+      const response = await authService.verifyEmail(token);
+      return response;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || "Email verification failed"
+      );
     }
   }
 );
 
-export const getUserProfile = createAsyncThunk(
-  "auth/getUserProfile",
-  async (_, { rejectWithValue }) => {
+export const forgotPasswordThunk = createAsyncThunk(
+  "auth/forgot-password",
+  async (emailData, thunkAPI) => {
     try {
-      const res = await axiosInstance.get("/user/profile");
-      return res.data.user;
-    } catch (err) {
-      return rejectWithValue(err.response?.data);
+      const response = await authService.forgotPassword(emailData);
+      return response;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || "Failed to send reset email"
+      );
     }
   }
 );
 
-export const updateUserProfile = createAsyncThunk(
-  "auth/updateUserProfile",
-  async (userData, { rejectWithValue }) => {
+export const resetPasswordThunk = createAsyncThunk(
+  "auth/reset-password",
+  async (resetData, thunkAPI) => {
     try {
-      const res = await axiosInstance.put("/user/update-profile", userData);
-      return res.data.user;
-    } catch (err) {
-      return rejectWithValue(err.response?.data);
+      const response = await authService.resetPassword(resetData);
+      return response;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || "Password reset failed"
+      );
     }
   }
 );
+
+/* -------------------------------------------------------------------------- */
+/*                                 Auth Slice                                 */
+/* -------------------------------------------------------------------------- */
 
 const authSlice = createSlice({
   name: "auth",
-  initialState: {
-    user: null,
-    loading: false,
-    error: null,
-    isAuthenticated: false,
-    signupSuccess: false,
-  },
+  initialState,
+
   reducers: {
-    logout: (state) => {
+    logout(state) {
       state.user = null;
+      state.accessToken = null;
+      state.tokenType = null;
       state.isAuthenticated = false;
-      state.loading = false;
       state.error = null;
-      localStorage.removeItem("token");
+      state.success = null;
+
+      // LocalStorage Clean करें
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("tokenType");
+      localStorage.removeItem("user");
+    },
+
+    clearError(state) {
+      state.error = null;
+    },
+
+    clearSuccess(state) {
+      state.success = null;
     },
   },
 
   extraReducers: (builder) => {
-    // Register
     builder
-      .addCase(registerUser.pending, (state) => {
+      /* 1. Signup */
+      .addCase(signupThunk.pending, (state) => {
         state.loading = true;
         state.error = null;
+        state.success = null;
       })
-      .addCase(registerUser.fulfilled, (state, action) => {
+      .addCase(signupThunk.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload;
-        // Don't mark as authenticated on signup; just flag success
-        state.signupSuccess = true;
-        toast.success("Registration Successful!");
+        state.success = action.payload.message || "Signup successful";
       })
-      .addCase(registerUser.rejected, (state, action) => {
+      .addCase(signupThunk.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload?.message || "Registration failed";
-        state.signupSuccess = false;
-        toast.error(action.payload || "Registration failed!");
-      });
+        state.error = action.payload;
+      })
 
-    // Login
-    builder
-      .addCase(loginUser.pending, (state) => {
+      /* 2. Verify Email */
+      .addCase(verifyEmailThunk.pending, (state) => {
         state.loading = true;
         state.error = null;
+        state.success = null;
       })
-      .addCase(loginUser.fulfilled, (state, action) => {
+      .addCase(verifyEmailThunk.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload;
+        state.success = action.payload.message || "Email verified successfully";
+      })
+      .addCase(verifyEmailThunk.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      /* 3. Login - FIXED PAYLOAD PARSING */
+      .addCase(loginThunk.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.success = null;
+      })
+      .addCase(loginThunk.fulfilled, (state, action) => {
+        state.loading = false;
+
+        // Extracting exact fields from backend response
+        const userInfo = action.payload?.data?.userInfo;
+        const tokenInfo = action.payload?.data?.tokenInfo;
+
+        state.user = userInfo || null;
+        state.accessToken = tokenInfo?.accessToken || null;
+        state.tokenType = tokenInfo?.tokenType || "Bearer";
         state.isAuthenticated = true;
-        //toast.success("Login Successful!");
-      })
-      .addCase(loginUser.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload?.message || "Login failed";
-        toast.error(action.payload || "Invalid Credentials!");
-      });
+        state.success = action.payload?.message || "Login successful";
 
-    // Load User
-    builder
-      .addCase(loadUser.pending, (state) => {
+        // Save to LocalStorage for persistence
+        if (tokenInfo?.accessToken) {
+          localStorage.setItem("accessToken", tokenInfo.accessToken);
+          localStorage.setItem("tokenType", tokenInfo.tokenType || "Bearer");
+        }
+        if (userInfo) {
+          localStorage.setItem("user", JSON.stringify(userInfo));
+        }
+      })
+      .addCase(loginThunk.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+
+      /* 4. Forgot Password */
+      .addCase(forgotPasswordThunk.pending, (state) => {
         state.loading = true;
         state.error = null;
+        state.success = null;
       })
-      .addCase(loadUser.fulfilled, (state, action) => {
+      .addCase(forgotPasswordThunk.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload;
-        state.isAuthenticated = true;
+        state.success = action.payload.message || "Reset link sent successfully";
       })
-      .addCase(loadUser.rejected, (state) => {
+      .addCase(forgotPasswordThunk.rejected, (state, action) => {
         state.loading = false;
-        state.user = null;
-        state.isAuthenticated = false;
-      });
+        state.error = action.payload;
+      })
 
-    // Get User Profile
-    builder
-      .addCase(getUserProfile.pending, (state) => {
+      /* 5. Reset Password */
+      .addCase(resetPasswordThunk.pending, (state) => {
         state.loading = true;
         state.error = null;
+        state.success = null;
       })
-      .addCase(getUserProfile.fulfilled, (state, action) => {
+      .addCase(resetPasswordThunk.fulfilled, (state, action) => {
         state.loading = false;
-        state.user = action.payload;
+        state.success = action.payload.message || "Password reset successful";
       })
-      .addCase(getUserProfile.rejected, (state, action) => {
+      .addCase(resetPasswordThunk.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload?.message || "Failed to fetch profile";
-        toast.error(state.error);
+        state.error = action.payload;
       });
-
-    // Update User Profile
-    builder
-      .addCase(updateUserProfile.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(updateUserProfile.fulfilled, (state, action) => {
-        state.loading = false;
-        state.user = action.payload;
-        //toast.success("Profile updated successfully!");
-      })
-      .addCase(updateUserProfile.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload?.message || "Failed to update profile";
-        toast.error(state.error);
-      });
-
-    // Logout
-    builder.addCase(logoutUser.fulfilled, (state) => {
-      state.user = null;
-      state.isAuthenticated = false;
-    });
   },
 });
 
+export const { logout, clearError, clearSuccess } = authSlice.actions;
 
-export const { logout } = authSlice.actions;
 export default authSlice.reducer;
